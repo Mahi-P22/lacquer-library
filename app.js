@@ -28,10 +28,10 @@
     "Static Nails": "staticnails", "Color Street": "colorstreet", "Glamnetic": "glamnetic", "Apres": "apresnailofficial",
     "Beetles": "beetlesgelpolish", "Barry M": "barrymcosmetics", "Le Mini Macaron": "leminimacaron",
     // Brands added without a confirmed handle: type it in Settings to start tagging them.
-    "Modelones": "", "Mia Secret": "", "Gelx": "", "Aimeili": "", "Born Pretty": ""
+    "Modelones": "", "Mia Secret": "", "Gelx": "", "Aimeili": "", "Born Pretty": "", "Xejayi": "", "Vettsy": ""
   };
   // Brands that mostly name shades by number, so their shades are added by hand.
-  const NUMBERED_BRANDS = { modelones: "Modelones", beetles: "Beetles", dnd: "DND", miasecret: "Mia Secret", aimeili: "Aimeili", bornpretty: "Born Pretty", gelish: "Gelish", kiarasky: "Kiara Sky" };
+  const NUMBERED_BRANDS = { modelones: "Modelones", beetles: "Beetles", dnd: "DND", miasecret: "Mia Secret", aimeili: "Aimeili", bornpretty: "Born Pretty", xejayi: "Xejayi", vettsy: "Vettsy", gelish: "Gelish", kiarasky: "Kiara Sky" };
   const DEFAULT_SETTINGS = {
     handle: "", tags: "#nails #nailsofinstagram #nailart #naildesign #nailinspo #manicure #nailpolish #swatch",
     sign: "", brandTags: true, emoji: true, handles: {}
