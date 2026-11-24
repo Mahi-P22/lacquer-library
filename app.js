@@ -26,8 +26,12 @@
     "Butter London": "butterlondon", "Dior": "diorbeauty", "Chanel": "chanel.beauty", "Revlon": "revlon",
     "Maybelline": "maybelline", "Rimmel": "rimmellondonuk", "KBShimmer": "kbshimmer", "Emily de Molly": "emilydemolly",
     "Static Nails": "staticnails", "Color Street": "colorstreet", "Glamnetic": "glamnetic", "Apres": "apresnailofficial",
-    "Beetles": "beetlesgelpolish", "Barry M": "barrymcosmetics", "Le Mini Macaron": "leminimacaron"
+    "Beetles": "beetlesgelpolish", "Barry M": "barrymcosmetics", "Le Mini Macaron": "leminimacaron",
+    // Brands added without a confirmed handle: type it in Settings to start tagging them.
+    "Modelones": "", "Mia Secret": "", "Gelx": "", "Aimeili": "", "Born Pretty": ""
   };
+  // Brands that mostly name shades by number, so their shades are added by hand.
+  const NUMBERED_BRANDS = { modelones: "Modelones", beetles: "Beetles", dnd: "DND", miasecret: "Mia Secret", aimeili: "Aimeili", bornpretty: "Born Pretty", gelish: "Gelish", kiarasky: "Kiara Sky" };
   const DEFAULT_SETTINGS = {
     handle: "", tags: "#nails #nailsofinstagram #nailart #naildesign #nailinspo #manicure #nailpolish #swatch",
     sign: "", brandTags: true, emoji: true, handles: {}
@@ -209,7 +213,7 @@
     $("#handles").innerHTML = names.map((b) => `
       <div class="row"><span>${esc(b)}</span><input type="text" value="${esc(all[b] ? "@" + String(all[b]).replace(/^@/, "") : "")}" placeholder="@handle" data-hbrand="${esc(b)}" aria-label="Instagram handle for ${esc(b)}"></div>`).join("");
     $("#brandList").innerHTML = brandNames().map((b) => `<option value="${esc(b)}"></option>`).join("");
-    $("#catalogBrands").innerHTML = Object.keys(CATALOG).sort().map((b) => `<option value="${esc(b)}"></option>`).join("");
+    $("#catalogBrands").innerHTML = [...new Set([...Object.keys(CATALOG), ...Object.values(NUMBERED_BRANDS)])].sort().map((b) => `<option value="${esc(b)}"></option>`).join("");
   }
 
   function renderAI() {
@@ -283,10 +287,13 @@
     const brandQ = $("#qBrand").value.trim(), hint = $("#qHint").value.trim().toLowerCase();
     const brand = catalogBrand(brandQ);
     if (!brand) {
-      lastFound = [];
-      $("#findOut").innerHTML = `<div class="empty">${esc(brandQ)} isn't in the built-in list yet. Add its shades by hand with “+ Add a polish”${state.ai.on && state.ai.key ? ", or tap “Ask AI for more”" : ""}.</div>`;
+      lastFound = []; lastBrand = canonicalBrand(brandQ);
+      const numbered = NUMBERED_BRANDS[norm(brandQ)];
+      const why = numbered ? `${esc(numbered)} mostly names its shades by number (like #2603) or sells them in sets, so there's no ready-made list. Add yours with the name or number on the bottle, and pick the colour.` : `${esc(brandQ)} isn't in the built-in list yet, but you can add its shades yourself.`;
+      $("#findOut").innerHTML = `<div class="empty stack" style="gap:10px"><span>${why}</span>${manualBtn(lastBrand, true)}${state.ai.on && state.ai.key ? `<span class="note">Or tap “Ask AI for more”.</span>` : ""}</div>`;
       return;
     }
+    lastBrand = brand;
     const all = CATALOG[brand].map((s) => toPolish(brand, s));
     let list = all, note = "";
     if (hint) {
@@ -299,17 +306,27 @@
     lastFound = list;
     renderFound(note);
   });
+  let lastBrand = "";
+  function canonicalBrand(q) { const n = norm(q); return brandNames().find((b) => norm(b) === n) || q.trim(); }
+  const manualBtn = (brand, primary) => `<button type="button" class="btn ${primary ? "primary" : "ghost"} block" data-manual="${esc(brand)}">+ Add your own ${esc(brand)} shade</button>`;
   function renderFound(note = "") {
-    if (!lastFound.length) { $("#findOut").innerHTML = `<div class="empty">No shades found. Try a different spelling or colour.</div>`; return; }
+    if (!lastFound.length) { $("#findOut").innerHTML = `<div class="empty">No shades found. Try a different spelling or colour.</div>` + (lastBrand ? manualBtn(lastBrand) : ""); return; }
     const have = owned();
     $("#findOut").innerHTML = (note ? `<p class="note">${note}</p>` : "") + lastFound.map((p, i) => {
       const h = have.has(norm(p.brand) + "|" + norm(p.name));
       return `<div class="polish">${bottle(p)}
         <div class="pmeta"><div class="pname">${esc(p.name)}</div><div class="pbrand">${esc(p.brand)} · ${esc(p.finish)}${p.coll ? " · " + esc(p.coll) : ""}</div></div>
         <button class="btn small ${h ? "ghost" : "primary"}" data-addfound="${i}" ${h ? "disabled" : ""}>${h ? "In library" : "+ Add"}</button></div>`;
-    }).join("");
+    }).join("") + (lastBrand ? `<p class="note">Don't see yours?</p>${manualBtn(lastBrand)}` : "");
   }
   $("#findOut").addEventListener("click", (e) => {
+    const m = e.target.closest("[data-manual]");
+    if (m) {
+      resetAddForm(); $("#fBrand").value = m.dataset.manual;
+      $("#findPanel").hidden = true; $("#addForm").hidden = false;
+      window.scrollTo({ top: 0, behavior: "smooth" }); $("#fName").focus();
+      return;
+    }
     const b = e.target.closest("[data-addfound]"); if (!b) return;
     const p = lastFound[+b.dataset.addfound]; if (!p) return;
     try { savePolish({ ...p, id: uid() }); toast(`Added ${p.name}`); renderFound(); } catch { toast("Couldn't save. Your browser storage may be full."); }

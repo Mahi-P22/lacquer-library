@@ -6,7 +6,7 @@ A nail polish library and Instagram caption helper. Keep track of the polishes y
 
 ## What it does
 
-- **Library.** Add polishes by hand, or pick them from a built-in list of popular shades from OPI, Essie, Chanel, CND, Holo Taco and more. Each one shows as a little bottle in its colour.
+- **Library.** Add polishes by hand, or pick them from a built-in list of popular shades from OPI, Essie, Chanel, CND, Holo Taco and more. For brands that name shades by number (like Modelones), search the brand and tap "Add your own" to add a shade by its number. Each one shows as a little bottle in its colour.
 - **New post.** Tap the polishes in your set, describe it in a few words, choose a style (trendy, cute, minimal, funny or detailed) and get a caption with the polish list, brand @tags, your handle and your hashtags. Copy it and paste it into Instagram.
 - **Trends.** Seasonal trend ideas with caption lines, hashtags, "See examples" links to TikTok, Instagram and Pinterest, and a spot to save your own inspo links and screenshots. It opens on the season that matches today's date.
 - **Settings.** Your handle, default hashtags, sign-off, brand @tags (editable), and a backup file you can download and restore.
