@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Lacquer Library</title>
+<meta name="description" content="A nail polish library and Instagram caption helper that tags the brands for you.">
+<meta name="theme-color" content="#eef5fb">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 22'%3E%3Crect x='4' width='6' height='8' fill='%2312263b'/%3E%3Cpath d='M0 10.8 3.5 8h7l3.5 2.8V22H0z' fill='%232f7fc1'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@600&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="top"><div class="wrap">
+  <div class="brandmark"><span class="cap" aria-hidden="true"></span>Lacquer Library</div>
+  <div class="sync" id="sync">Saved on this device</div>
+</div></header>
+
+<main class="wrap">
+
+  <!-- LIBRARY -->
+  <section id="view-library" class="stack">
+    <div>
+      <h2>Your polishes</h2>
+      <p class="sub"><span class="count" id="libCount">0</span> in your library</p>
+    </div>
+    <div class="row">
+      <input id="libSearch" type="search" class="grow" placeholder="Search your polishes by name, brand or colour" aria-label="Search your polishes">
+    </div>
+    <div class="row">
+      <button class="btn primary" id="openAdd">+ Add a polish</button>
+      <button class="btn ghost" id="openFind">Find polishes by brand</button>
+    </div>
+
+    <form id="addForm" class="panel stack" hidden>
+      <div class="row" style="justify-content:space-between"><h3 id="addTitle">Add a polish</h3><button type="button" class="btn small ghost" id="closeAdd">Close</button></div>
+      <div class="two">
+        <label class="field"><span>Brand</span><input id="fBrand" type="text" list="brandList" required placeholder="e.g. OPI"></label>
+        <label class="field"><span>Shade name</span><input id="fName" type="text" required placeholder="e.g. Bubble Bath"></label>
+      </div>
+      <div class="two">
+        <label class="field"><span>Finish</span><select id="fFinish"></select></label>
+        <label class="field"><span>Type</span><select id="fType"></select></label>
+      </div>
+      <div class="row">
+        <label class="field"><span>Colour</span><input id="fColor" type="color" value="#e8b4bc"></label>
+        <label class="field grow"><span>Collection (optional)</span><input id="fColl" type="text" placeholder="e.g. Fall 2025"></label>
+      </div>
+      <button class="btn primary block" type="submit" id="addSubmit">Save to library</button>
+    </form>
+
+    <section id="findPanel" class="panel stack" hidden>
+      <div class="row" style="justify-content:space-between"><h3>Find polishes by brand</h3><button type="button" class="btn small ghost" id="closeFind">Close</button></div>
+      <form id="findForm" class="stack">
+        <label class="field"><span>Brand</span><input id="qBrand" type="text" list="catalogBrands" required placeholder="e.g. OPI, Essie, Chanel"></label>
+        <label class="field"><span>Shade name or colour (optional)</span><input id="qHint" type="text" placeholder="e.g. 'Ballet Slippers' or 'dark red' or 'nude'"></label>
+        <div class="row">
+          <button class="btn primary grow" type="submit" id="findBtn">Show shades</button>
+          <button class="btn ghost" type="button" id="findAI" hidden>Ask AI for more</button>
+        </div>
+      </form>
+      <p class="note" id="findNote">Shades come from a built-in list of popular brands. Colours are close but not exact, so tap Edit after adding if one looks off.</p>
+      <div id="findOut" class="list"></div>
+    </section>
+
+    <div id="libList" class="list"></div>
+  </section>
+
+  <!-- NEW POST -->
+  <section id="view-post" class="stack" hidden>
+    <div>
+      <h2>New post</h2>
+      <p class="sub">Tap the polishes you used, describe the set, and get a caption.</p>
+    </div>
+
+    <div class="panel stack">
+      <div class="row" style="justify-content:space-between">
+        <h3>1. Polishes in this set <span class="badge" id="selBadge" hidden>0</span></h3>
+        <button class="btn small ghost" id="clearSel">Clear</button>
+      </div>
+      <input id="postSearch" type="search" placeholder="Search your library" aria-label="Search polishes to pick">
+      <div id="pickList" class="list" style="max-height: 360px; overflow-y: auto;"></div>
+    </div>
+
+    <div class="panel stack">
+      <h3>2. About the set <span class="note">(optional)</span></h3>
+      <label class="field"><span>Describe it in a few words</span><input id="vibe" type="text" placeholder="e.g. chrome french tips with tiny hearts"></label>
+      <input id="photoIn" type="file" accept="image/*" aria-label="Choose nail photo">
+      <img id="photoPrev" class="photo" alt="Your nail set" hidden>
+      <p class="note" id="photoNote">Your photo is only shown here as a preview. It never leaves your device.</p>
+    </div>
+
+    <div class="panel stack">
+      <h3>3. Caption style</h3>
+      <label class="field"><span>Opening line (optional)</span><input id="hook" type="text" placeholder="Pick one from the Trends tab, or write your own"></label>
+      <div class="chips" id="toneChips"></div>
+      <div class="row">
+        <button class="btn primary grow" id="genCap">Write a caption</button>
+        <button class="btn ghost" id="genBasic">Use my opening line</button>
+      </div>
+      <p class="note" id="capNote"></p>
+      <label class="field"><span>Caption (you can edit it)</span><textarea id="captionOut" class="caption" rows="10" placeholder="Pick your polishes above, then tap a button to make a caption."></textarea></label>
+      <div class="row">
+        <button class="btn primary grow" id="copyCap">Copy caption</button>
+        <a class="btn ghost grow" href="https://www.instagram.com/" target="_blank" rel="noopener">Open Instagram</a>
+      </div>
+      <a class="btn ghost block" href="https://business.facebook.com/latest/composer" target="_blank" rel="noopener">Schedule it in Meta Business Suite</a>
+      <details>
+        <summary>How to post it</summary>
+        <ol class="steps" style="margin-top:8px">
+          <li>Tap <b>Copy caption</b>.</li>
+          <li>Open the Instagram app and start a new post with your nail photo.</li>
+          <li>Long-press the caption box and tap <b>Paste</b>. The brand tags are already in it.</li>
+        </ol>
+        <p class="note">Instagram only lets approved business apps post for you, so copy and paste is the way. It takes about five seconds.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- TRENDS -->
+  <section id="view-trends" class="stack" hidden>
+    <div>
+      <h2>Trending now</h2>
+      <p class="sub" id="trendSub"></p>
+    </div>
+    <div class="chips season-chips" id="seasonChips" role="group" aria-label="Choose a season"></div>
+    <button class="btn ghost" id="refreshTrends" hidden>Get fresh ideas with AI</button>
+    <p class="note" id="trendNote"></p>
+    <div id="trendList" class="list" style="gap:12px"></div>
+    <section class="panel stack">
+      <h3>Posting tips</h3>
+      <ul class="steps" id="tipList"></ul>
+    </section>
+  </section>
+
+  <!-- SETTINGS -->
+  <section id="view-settings" class="stack" hidden>
+    <div>
+      <h2>Caption settings</h2>
+      <p class="sub">These get added to every caption.</p>
+    </div>
+    <form id="setForm" class="panel stack">
+      <label class="field"><span>Your Instagram handle</span><input id="sHandle" type="text" placeholder="@yournails"></label>
+      <label class="field"><span>Hashtags to add to every post</span><textarea id="sTags" rows="3" style="min-height:80px"></textarea></label>
+      <label class="field"><span>Sign-off line (optional)</span><input id="sSign" type="text" placeholder="e.g. Thanks for looking! 💕"></label>
+      <label class="row"><input id="sBrandTags" type="checkbox"> <span>Add each brand's hashtag too (like #opi)</span></label>
+      <label class="row"><input id="sEmoji" type="checkbox"> <span>Use emoji in captions</span></label>
+      <button class="btn primary" type="submit">Save settings</button>
+    </form>
+
+    <section class="panel stack">
+      <h3>Brand Instagram tags</h3>
+      <p class="note">This is what gets tagged for each brand. Fix any that are wrong, or add a brand that's missing.</p>
+      <div id="handles" class="handles"></div>
+      <form id="handleForm" class="row">
+        <input id="hBrand" type="text" class="grow" placeholder="Brand" aria-label="Brand name" required>
+        <input id="hHandle" type="text" class="grow" placeholder="@handle" aria-label="Brand Instagram handle" required>
+        <button class="btn small" type="submit">Add</button>
+      </form>
+    </section>
+
+    <section class="panel stack">
+      <h3>Back up your library</h3>
+      <p class="note">Everything is saved in this browser only. Download a backup file to keep it safe or move it to another phone or computer.</p>
+      <div class="row">
+        <button class="btn grow" id="exportBtn" type="button">Download backup</button>
+        <label class="btn ghost grow filebtn">Restore from backup<input id="importIn" type="file" accept="application/json,.json"></label>
+      </div>
+    </section>
+
+    <section class="panel stack">
+      <div class="row" style="justify-content:space-between"><h3>AI helper</h3><span class="badge-ai" id="aiState">Off</span></div>
+      <p class="note">Optional. Everything works without it. If you have your own Anthropic API key, paste it here to get AI-written captions (it can read your photo), more shade suggestions and fresh trend ideas. Using it costs a small amount on your Anthropic account.</p>
+      <label class="row"><input id="aiOn" type="checkbox"> <span>Turn on the AI helper</span></label>
+      <div id="aiBox" class="ai-box stack" hidden>
+        <label class="field"><span>Your Anthropic API key</span><input id="aiKey" type="password" autocomplete="off" spellcheck="false" placeholder="sk-ant-..."></label>
+        <p class="small-print">The key is stored only in this browser and is sent only to Anthropic. Don't turn this on with a shared or public computer.</p>
+        <div class="row">
+          <button class="btn small primary" id="aiSave" type="button">Save key</button>
+          <button class="btn small ghost danger" id="aiForget" type="button">Forget key</button>
+        </div>
+      </div>
+    </section>
+
+    <footer class="credit">Lacquer Library · your data stays on this device</footer>
+  </section>
+</main>
+
+<datalist id="brandList"></datalist>
+<datalist id="catalogBrands"></datalist>
+
+<nav class="tabs" aria-label="Sections"><div class="inner">
+  <button data-tab="library" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="8" y="2" width="8" height="7" rx="1.5"/><rect x="5" y="9" width="14" height="13" rx="3"/></svg>Library</button>
+  <button data-tab="post"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>New post</button>
+  <button data-tab="trends"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>Trends</button>
+  <button data-tab="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>Settings</button>
+</div></nav>
+
+<div id="toast" class="toast" role="status" hidden></div>
+
+<script src="catalog.js"></script>
+<script src="trends.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
