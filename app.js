@@ -281,7 +281,7 @@
     const keys = Object.keys(CATALOG);
     return keys.find((k) => norm(k) === n) || keys.find((k) => norm(k).startsWith(n) || n.startsWith(norm(k))) || keys.find((k) => norm(k).includes(n)) || null;
   }
-  const toPolish = (brand, s) => ({ id: uid(), brand, name: s[0], hex: safeHex(s[1]), finish: FINISHES.includes(s[2]) ? s[2] : "Creme", type: "Nail polish", coll: s[3] || "", added: Date.now() });
+  const toPolish = (brand, s) => ({ id: uid(), brand, name: s[0], hex: safeHex(s[1]), finish: FINISHES.includes(s[2]) ? s[2] : "Creme", type: TYPES.includes(s[4]) ? s[4] : "Nail polish", coll: s[3] || "", added: Date.now() });
   $("#findForm").addEventListener("submit", (e) => {
     e.preventDefault();
     const brandQ = $("#qBrand").value.trim(), hint = $("#qHint").value.trim().toLowerCase();
@@ -312,7 +312,8 @@
   function renderFound(note = "") {
     if (!lastFound.length) { $("#findOut").innerHTML = `<div class="empty">No shades found. Try a different spelling or colour.</div>` + (lastBrand ? manualBtn(lastBrand) : ""); return; }
     const have = owned();
-    $("#findOut").innerHTML = (note ? `<p class="note">${note}</p>` : "") + lastFound.map((p, i) => {
+    const missing = lastFound.filter((p) => !have.has(norm(p.brand) + "|" + norm(p.name))).length;
+    $("#findOut").innerHTML = (note ? `<p class="note">${note}</p>` : "") + (missing > 1 ? `<button type="button" class="btn primary block" data-addall>+ Add all ${missing} to my library</button>` : "") + lastFound.map((p, i) => {
       const h = have.has(norm(p.brand) + "|" + norm(p.name));
       return `<div class="polish">${bottle(p)}
         <div class="pmeta"><div class="pname">${esc(p.name)}</div><div class="pbrand">${esc(p.brand)} · ${esc(p.finish)}${p.coll ? " · " + esc(p.coll) : ""}</div></div>
@@ -325,6 +326,12 @@
       resetAddForm(); $("#fBrand").value = m.dataset.manual;
       $("#findPanel").hidden = true; $("#addForm").hidden = false;
       window.scrollTo({ top: 0, behavior: "smooth" }); $("#fName").focus();
+      return;
+    }
+    if (e.target.closest("[data-addall]")) {
+      const have = owned(); let n = 0;
+      try { for (const p of lastFound) if (!have.has(norm(p.brand) + "|" + norm(p.name))) { const { example, ...c } = { ...p, id: uid() }; state.polishes.push(c); n++; } if (!LS.set("polishes", state.polishes)) throw 0; renderAll(); renderFound(); toast(`Added ${n} polishes`); }
+      catch { toast("Couldn't save. Your browser storage may be full."); }
       return;
     }
     const b = e.target.closest("[data-addfound]"); if (!b) return;

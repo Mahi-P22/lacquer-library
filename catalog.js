@@ -93,6 +93,48 @@ window.LL_CATALOG = {
   "Rimmel": [
     ["White Hot Love", "#f8f6f3", "Creme", "60 Seconds"]
   ],
+  "Modelones": [
+    // Read from a swatch sheet of Modelones gel polishes; colours are approximate.
+    ["#0831 Butter Yellow", "#f7e8a8", "Creme", "", "Gel polish"],
+    ["#0832 Peach", "#f3b3a3", "Creme", "", "Gel polish"],
+    ["#0833 Dusty Pink", "#d9a3a8", "Creme", "", "Gel polish"],
+    ["#0834 Bubblegum Pink", "#f0a3b8", "Creme", "", "Gel polish"],
+    ["#0835 Sky Blue", "#7aa8d4", "Creme", "", "Gel polish"],
+    ["#0836 Terracotta", "#d98466", "Creme", "", "Gel polish"],
+    ["#0837 Lilac", "#c9a3d6", "Creme", "", "Gel polish"],
+    ["#0838 Taupe", "#b3a3a0", "Creme", "", "Gel polish"],
+    ["#0839 Dusty Purple", "#7a6080", "Creme", "", "Gel polish"],
+    ["#0840 Sunshine Yellow", "#f5d20f", "Creme", "", "Gel polish"],
+    ["#0841 Neon Coral", "#ff6a5c", "Neon", "", "Gel polish"],
+    ["#0842 Lime", "#7ad62a", "Creme", "", "Gel polish"],
+    ["#0843 Hot Pink", "#f5487a", "Creme", "", "Gel polish"],
+    ["#0844 Classic Red", "#d42a2a", "Creme", "", "Gel polish"],
+    ["#0845 Bright Red", "#e81f26", "Creme", "", "Gel polish"],
+    ["#0846 Rust Brown", "#7a1f0f", "Creme", "", "Gel polish"],
+    ["#0847 Teal", "#0f6670", "Creme", "", "Gel polish"],
+    ["#0848 Plum", "#5e0f45", "Creme", "", "Gel polish"],
+    ["#0849 Pink Glitter", "#ebc4cc", "Glitter", "", "Gel polish"],
+    ["#0850 Silver Glitter", "#d9dbe0", "Glitter", "", "Gel polish"],
+    ["#0851 Rose Gold Glitter", "#e8cbbd", "Glitter", "", "Gel polish"],
+    ["#0852 Mauve Glitter", "#c9a3b0", "Glitter", "", "Gel polish"],
+    ["#0853 Baby Blue", "#b8cfe6", "Creme", "", "Gel polish"],
+    ["#0854 Salmon", "#e88a66", "Creme", "", "Gel polish"],
+    ["#0855 Mauve", "#a35a66", "Creme", "", "Gel polish"],
+    ["#0856 Green", "#3a7a45", "Creme", "", "Gel polish"],
+    ["#0857 Burnt Orange", "#c4500f", "Creme", "", "Gel polish"],
+    ["#0859 Marigold", "#f0a812", "Creme", "", "Gel polish"],
+    ["#0860 Periwinkle", "#9b94e6", "Creme", "", "Gel polish"],
+    ["#0861 Cobalt Blue", "#1f5fae", "Creme", "", "Gel polish"],
+    ["#0862 Violet", "#5a1fa8", "Creme", "", "Gel polish"],
+    ["#0863 Royal Navy", "#1a1f8a", "Creme", "", "Gel polish"],
+    ["#0865 Lavender Glitter", "#a493dc", "Glitter", "", "Gel polish"],
+    ["#0866 Grey Glitter", "#8a8c94", "Glitter", "", "Gel polish"],
+    ["Silver (no number)", "#c4c6cc", "Metallic", "", "Gel polish"],
+    ["Dark Teal (no number)", "#163a44", "Shimmer", "", "Gel polish"],
+    ["Berry (no number)", "#8a1a3a", "Creme", "", "Gel polish"],
+    ["Pink Shimmer (no number)", "#f2d3d6", "Shimmer", "", "Gel polish"],
+    ["White Shimmer (no number)", "#f2efee", "Shimmer", "", "Gel polish"]
+  ],
   "Nailberry": [
     ["Noirberry", "#2e0a14", "Creme"]
   ]
