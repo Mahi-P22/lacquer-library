@@ -365,8 +365,7 @@
     if (!list.length) return "";
     const lines = list.map((p) => {
       const h = handleFor(p.brand);
-      const extra = [p.finish && p.finish !== "Creme" ? p.finish.toLowerCase() : "", p.type && p.type !== "Nail polish" ? p.type.toLowerCase() : ""].filter(Boolean).join(", ");
-      return `${e ? "✨" : "–"} ${p.name}${extra ? ` (${extra})` : ""} by ${h || p.brand}`;
+      return `${e ? "✨" : "–"} ${p.name} by ${h || p.brand}`;
     });
     return `${e ? "💅 " : ""}Polishes used:\n${lines.join("\n")}`;
   }
@@ -387,11 +386,11 @@
   const FINISH_WORD = { creme: "glossy", shimmer: "shimmery", glitter: "glitter", holo: "holo", jelly: "jelly", sheer: "sheer", metallic: "metallic", chrome: "chrome", magneticcateye: "cat eye", matte: "matte", flakies: "flakie", thermal: "colour-changing", neon: "neon" };
   const EMOJI = { red: "❤️", burgundy: "🍷", pink: "🎀", nude: "🤍", beige: "🤍", white: "🤍", black: "🖤", brown: "🤎", orange: "🧡", coral: "🧡", yellow: "💛", gold: "✨", olive: "🫒", green: "💚", mint: "💚", blue: "💙", navy: "💙", purple: "💜", lilac: "💜", plum: "💜", grey: "🩶", silver: "🩶" };
   const TEMPLATES = {
-    trendy: ["{color} {finish} era, officially", "obsessed is an understatement", "no thoughts, just {color} nails", "the {color} manicure of my dreams", "this set is giving everything", "main character manicure", "{vibe} and i'm obsessed", "new set, who dis", "{vibe}. that's the post", "{color} nails > everything else"],
+    trendy: ["{color} era, officially", "obsessed is an understatement", "no thoughts, just {color} nails", "the {color} manicure of my dreams", "this set is giving everything", "main character manicure", "{vibe} and i'm obsessed", "new set, who dis", "{vibe}. that's the post", "{color} nails > everything else"],
     cute: ["a little {color} something for the week", "sweet as can be", "soft {color} and happy hands", "my nails said “be cute” so i listened", "{vibe}, because why not", "tiny bit of {color} joy", "{vibe} for a happy week", "fresh mani, fresh mood"],
-    minimal: ["{color}.", "{color}, {finish}.", "today's mani.", "simple. {color}. done.", "{vibe}.", "quiet {color}."],
+    minimal: ["{color}.", "today's mani.", "simple. {color}. done.", "{vibe}.", "quiet {color}."],
     funny: ["did my nails instead of my to-do list", "my bank account said no, my nails said {color}", "i'll be tapping on things for attention all week", "productivity: 0. nails: 10/10.", "{vibe}. yes, i will be staring at them all day", "these nails have better plans than me", "warning: will talk with my hands more than usual"],
-    detailed: ["{Vibe}. {count} on short nails, finished with lots of top coat. Full list below.", "This week's set: {color} with a {finish} finish. {count}, all listed below.", "{Color} {finish} set, built from {count}. Everything I used is tagged below so you can recreate it."]
+    detailed: ["{Vibe}. {count} on short nails, finished with lots of top coat. Full list below.", "This week's set: {color} all the way. {count}, all listed below.", "{Color} set, built from {count}. Everything I used is tagged below so you can recreate it."]
   };
   let lastTemplate = "";
   function templateOpening() {
@@ -432,7 +431,7 @@
     if (capBusy) return; capBusy = true;
     const btn = $("#genCap"); btn.disabled = true; btn.innerHTML = `<span class="spin"></span> Writing…`;
     $("#capNote").textContent = "";
-    const list = selectedPolishes().map((p) => `${p.brand} – ${p.name} (${p.finish || ""}, colour ${p.hex})`).join("\n");
+    const list = selectedPolishes().map((p) => `${p.brand} – ${p.name} (colour ${p.hex})`).join("\n");
     const toneHelp = {
       trendy: "current Instagram nail-girl voice: confident, a little playful, uses trending phrasing naturally (not cringe)",
       cute: "sweet and soft, playful", minimal: "very short and aesthetic, 3 to 8 words",
@@ -446,7 +445,7 @@ Her description of the set: "${$("#vibe").value.trim() || "(none)"}"
 ${$("#hook").value.trim() ? `She likes this opening line, keep it or riff on it: "${$("#hook").value.trim()}"` : ""}
 Polishes used:
 ${list}
-Rules: 1 to 3 short lines. ${state.settings.emoji ? "1 to 3 fitting emoji are fine." : "No emoji."} No hashtags, no @ tags, no list of polishes (those are added separately). No quotation marks around the caption. Reply with only the caption text.`;
+Rules: 1 to 3 short lines. ${state.settings.emoji ? "1 to 3 fitting emoji are fine." : "No emoji."} Don't name the finish or type of polish (no "sheer", "cat eye", "gel", "chrome" and so on). No hashtags, no @ tags, no list of polishes (those are added separately). No quotation marks around the caption. Reply with only the caption text.`;
     try {
       const images = hasPhoto ? [await shrink(state.photo)] : [];
       const text = (await callAI(prompt, images)).trim().replace(/^["“]|["”]$/g, "");
