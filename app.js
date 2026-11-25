@@ -33,7 +33,7 @@
   // Brands that mostly name shades by number, so their shades are added by hand.
   const NUMBERED_BRANDS = { modelones: "Modelones", beetles: "Beetles", dnd: "DND", miasecret: "Mia Secret", aimeili: "Aimeili", bornpretty: "Born Pretty", xejayi: "Xejayi", vettsy: "Vettsy", gelish: "Gelish", kiarasky: "Kiara Sky" };
   const DEFAULT_SETTINGS = {
-    handle: "", tags: "#nails #nailsofinstagram #nailart #naildesign #nailinspo #manicure #nailpolish #swatch",
+    handle: "", tags: "#nails #nailsofinstagram #nailart #nailinspo #manicure",
     sign: "", brandTags: true, emoji: true, handles: {}
   };
   const EXAMPLES = [
@@ -370,12 +370,14 @@
     });
     return `${e ? "💅 " : ""}Polishes used:\n${lines.join("\n")}`;
   }
+  const MAX_TAGS = 5;
   function hashtagBlock() {
     const s = state.settings; const tags = [];
     for (const t of String(state.extraTags || "").split(/\s+/)) if (t.startsWith("#") && !tags.includes(t)) tags.push(t);
     if (s.brandTags) for (const p of selectedPolishes()) { const t = "#" + norm(p.brand); if (!tags.includes(t)) tags.push(t); }
     for (const t of String(s.tags || "").split(/\s+/)) { const c = t.trim(); if (!c) continue; const tag = c.startsWith("#") ? c : "#" + c; if (!tags.includes(tag)) tags.push(tag); }
-    return tags.join(" ");
+    // Instagram allows at most 5 hashtags: Trends tags first, then brand tags, then your defaults.
+    return tags.slice(0, MAX_TAGS).join(" ");
   }
   function assemble(opening) {
     const s = state.settings;
@@ -535,9 +537,14 @@ Rules: 1 to 3 short lines. ${state.settings.emoji ? "1 to 3 fitting emoji are fi
     } else if (tg) {
       const tags = String(t.trends[+tg.dataset.usetags].tags || "");
       const cur = $("#captionOut").value;
-      const extra = tags.split(/\s+/).filter((x) => x && !cur.includes(x)).join(" ");
       state.extraTags = tags;
-      if (cur.trim()) $("#captionOut").value = cur.trimEnd() + (extra ? " " + extra : "");
+      if (cur.trim()) {
+        const lines = cur.trimEnd().split("\n");
+        const last = lines[lines.length - 1].trim();
+        if (last && last.split(/\s+/).every((w) => w.startsWith("#"))) lines[lines.length - 1] = hashtagBlock();
+        else lines.push("", hashtagBlock());
+        $("#captionOut").value = lines.join("\n");
+      }
       showTab("post"); toast(cur.trim() ? "Hashtags added to your caption" : "Hashtags will be added when you make a caption");
     } else if (pc) {
       const [i, j] = pc.dataset.tpol.split(":").map(Number);
