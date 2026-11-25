@@ -387,11 +387,11 @@
   const FINISH_WORD = { creme: "glossy", shimmer: "shimmery", glitter: "glitter", holo: "holo", jelly: "jelly", sheer: "sheer", metallic: "metallic", chrome: "chrome", magneticcateye: "cat eye", matte: "matte", flakies: "flakie", thermal: "colour-changing", neon: "neon" };
   const EMOJI = { red: "❤️", burgundy: "🍷", pink: "🎀", nude: "🤍", beige: "🤍", white: "🤍", black: "🖤", brown: "🤎", orange: "🧡", coral: "🧡", yellow: "💛", gold: "✨", olive: "🫒", green: "💚", mint: "💚", blue: "💙", navy: "💙", purple: "💜", lilac: "💜", plum: "💜", grey: "🩶", silver: "🩶" };
   const TEMPLATES = {
-    trendy: ["{color} era, officially", "obsessed is an understatement", "no thoughts, just {color} nails", "the {color} manicure of my dreams", "this set is giving everything", "main character manicure", "{vibe} and i'm obsessed", "new set, who dis", "{vibe}. that's the post", "{color} nails > everything else"],
-    cute: ["a little {color} something for the week", "sweet as can be", "soft {color} and happy hands", "my nails said “be cute” so i listened", "{vibe}, because why not", "tiny bit of {color} joy", "{vibe} for a happy week", "fresh mani, fresh mood"],
-    minimal: ["{color}.", "today's mani.", "simple. {color}. done.", "{vibe}.", "quiet {color}."],
-    funny: ["did my nails instead of my to-do list", "my bank account said no, my nails said {color}", "i'll be tapping on things for attention all week", "productivity: 0. nails: 10/10.", "{vibe}. yes, i will be staring at them all day", "these nails have better plans than me", "warning: will talk with my hands more than usual"],
-    detailed: ["{Vibe}. {count} on short nails, finished with lots of top coat. Full list below.", "This week's set: {color} all the way. {count}, all listed below.", "{Color} set, built from {count}. Everything I used is tagged below so you can recreate it."]
+    trendy: ["{color} era, officially", "obsessed is an understatement", "no thoughts, just {color} nails", "the {color} manicure of my dreams", "this set is giving everything", "main character manicure", "{vibe} and i'm obsessed", "new set, who dis", "{vibe}. that's the post", "{vibe} and i can't stop staring", "{vibe}, no notes", "{color} nails > everything else"],
+    cute: ["a little {color} something for the week", "sweet as can be", "soft {color} and happy hands", "my nails said “be cute” so i listened", "{vibe}, because why not", "tiny bit of {color} joy", "{vibe} for a happy week", "{vibe}, my happy place", "fresh mani, fresh mood"],
+    minimal: ["{color}.", "today's mani.", "simple. {color}. done.", "{vibe}.", "{vibe}, simply.", "quiet {color}."],
+    funny: ["did my nails instead of my to-do list", "my bank account said no, my nails said {color}", "i'll be tapping on things for attention all week", "productivity: 0. nails: 10/10.", "{vibe}. yes, i will be staring at them all day", "{vibe}, and suddenly i'm talking with my hands a lot more", "these nails have better plans than me", "warning: will talk with my hands more than usual"],
+    detailed: ["{Vibe}, done with {count}. Everything I used is tagged below.", "{Vibe}. {count} on short nails, finished with lots of top coat. Full list below.", "This week's set: {color} all the way. {count}, all listed below.", "{Color} set, built from {count}. Everything I used is tagged below so you can recreate it."]
   };
   let lastTemplate = "";
   function templateOpening() {
@@ -402,13 +402,14 @@
     const f0 = norm(list.find((p) => p.finish && p.finish !== "Creme")?.finish || list[0]?.finish || "creme");
     const finish = FINISH_WORD[f0] || "glossy";
     const count = list.length === 1 ? "One polish" : `${list.length} polishes`;
-    let pool = TEMPLATES[state.tone].filter((t) => vibe || !/\{vibe\}/i.test(t));
+    // If you described the set, always build the caption around your description.
+    let pool = TEMPLATES[state.tone].filter((t) => vibe ? /\{vibe\}/i.test(t) : !/\{vibe\}/i.test(t));
     if (pool.length > 1) pool = pool.filter((t) => t !== lastTemplate);
     const t = pick(pool); lastTemplate = t;
     let out = t.replace(/\{vibe\}/g, vibe).replace(/\{Vibe\}/g, cap1(vibe)).replace(/\{color\}/g, color).replace(/\{Color\}/g, cap1(color))
       .replace(/\{finish\}/g, finish).replace(/\{count\}/g, count);
     if (state.tone !== "detailed") out = cap1(out);
-    if (state.settings.emoji) out += " " + (EMOJI[cols[0]] || "💅") + (state.tone === "minimal" ? "" : " " + pick(["✨", "💅", "🫶"]));
+    if (state.settings.emoji) { const e1 = EMOJI[cols[0]] || "💅"; out += " " + e1 + (state.tone === "minimal" ? "" : " " + pick(["✨", "💅", "🫶"].filter((x) => x !== e1))); }
     return out;
   }
 
